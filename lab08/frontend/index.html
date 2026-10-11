@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EventFlow - Gestión de Espacios y Recursos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container header-content">
+            <h1 class="logo">EventFlow</h1>
+            <nav class="nav">
+                <button id="btn-login" class="btn btn-primary">Iniciar Sesión</button>
+                <span id="user-info" class="user-info hidden"></span>
+                <button id="btn-logout" class="btn btn-secondary hidden">Cerrar Sesión</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <!-- Login Modal -->
+            <div id="login-modal" class="modal hidden">
+                <div class="modal-content">
+                    <h2>Iniciar Sesión</h2>
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label for="login-username">Usuario</label>
+                            <input type="text" id="login-username" name="username" required autocomplete="username">
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Contraseña</label>
+                            <input type="password" id="login-password" name="password" required autocomplete="current-password">
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Entrar</button>
+                            <button type="button" id="btn-cancel-login" class="btn btn-secondary">Cancelar</button>
+                        </div>
+                        <div id="login-error" class="error-message hidden"></div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Section: Espacios -->
+            <section class="section">
+                <div class="section-header">
+                    <h2>Espacios</h2>
+                    <button id="btn-add-espacio" class="btn btn-primary" disabled>+ Nuevo Espacio</button>
+                </div>
+                <div id="espacio-form-container" class="form-container hidden">
+                    <h3 id="espacio-form-title">Nuevo Espacio</h3>
+                    <form id="espacio-form">
+                        <input type="hidden" id="espacio-id">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="espacio-nombre">Nombre *</label>
+                                <input type="text" id="espacio-nombre" name="nombre" required maxlength="100">
+                            </div>
+                            <div class="form-group">
+                                <label for="espacio-ubicacion">Ubicación *</label>
+                                <input type="text" id="espacio-ubicacion" name="ubicacion" required maxlength="100">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="espacio-aforo">Aforo Máximo *</label>
+                                <input type="number" id="espacio-aforo" name="aforo_maximo" required min="1">
+                            </div>
+                            <div class="form-group">
+                                <label for="espacio-estado">Estado *</label>
+                                <select id="espacio-estado" name="estado" required>
+                                    <option value="operativo">Operativo</option>
+                                    <option value="mantenimiento">Mantenimiento</option>
+                                    <option value="fuera_servicio">Fuera de servicio</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                            <button type="button" id="btn-cancel-espacio" class="btn btn-secondary">Cancelar</button>
+                        </div>
+                        <div id="espacio-form-error" class="error-message hidden"></div>
+                    </form>
+                </div>
+                <div id="espacios-list" class="card-grid"></div>
+                <div id="espacios-loading" class="loading hidden">Cargando espacios...</div>
+                <div id="espacios-error" class="error-message hidden"></div>
+            </section>
+
+            <!-- Section: Recursos -->
+            <section class="section">
+                <div class="section-header">
+                    <h2>Recursos Técnicos</h2>
+                    <button id="btn-add-recurso" class="btn btn-primary" disabled>+ Nuevo Recurso</button>
+                </div>
+                <div class="filters">
+                    <div class="form-group">
+                        <label for="filter-espacio">Filtrar por Espacio</label>
+                        <select id="filter-espacio">
+                            <option value="">Todos</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="filter-costo-min">Costo Mín</label>
+                        <input type="number" id="filter-costo-min" name="costo_min" step="0.01" min="0" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label for="filter-costo-max">Costo Máx</label>
+                        <input type="number" id="filter-costo-max" name="costo_max" step="0.01" min="0" placeholder="1000.00">
+                    </div>
+                    <button id="btn-apply-filters" class="btn btn-secondary">Aplicar</button>
+                    <button id="btn-clear-filters" class="btn btn-secondary">Limpiar</button>
+                </div>
+                <div id="recurso-form-container" class="form-container hidden">
+                    <h3 id="recurso-form-title">Nuevo Recurso</h3>
+                    <form id="recurso-form">
+                        <input type="hidden" id="recurso-id">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="recurso-nombre">Nombre *</label>
+                                <input type="text" id="recurso-nombre" name="nombre" required maxlength="100">
+                            </div>
+                            <div class="form-group">
+                                <label for="recurso-codigo">Código Inventario *</label>
+                                <input type="text" id="recurso-codigo" name="codigo_inventario" required maxlength="50" placeholder="Ej: PROJ-001">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="recurso-costo">Costo *</label>
+                                <input type="number" id="recurso-costo" name="costo" required step="0.01" min="0" placeholder="0.00">
+                            </div>
+                            <div class="form-group">
+                                <label for="recurso-stock">Stock *</label>
+                                <input type="number" id="recurso-stock" name="cantidad_stock" required min="0">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="recurso-espacio">Espacio *</label>
+                            <select id="recurso-espacio" name="espacio_id" required>
+                                <option value="">Seleccionar espacio...</option>
+                            </select>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                            <button type="button" id="btn-cancel-recurso" class="btn btn-secondary">Cancelar</button>
+                        </div>
+                        <div id="recurso-form-error" class="error-message hidden"></div>
+                    </form>
+                </div>
+                <div id="recursos-list" class="card-grid"></div>
+                <div id="recursos-loading" class="loading hidden">Cargando recursos...</div>
+                <div id="recursos-error" class="error-message hidden"></div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>EventFlow - Laboratorio 08 Django REST Framework</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
