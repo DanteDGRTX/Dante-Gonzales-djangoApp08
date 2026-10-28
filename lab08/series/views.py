@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import AllowAny
 from .models import Serie
 from .serializers import SerieSerializer
 
@@ -11,6 +12,8 @@ class IndexView(APIView):
 
 
 class SeriesView(APIView):
+    permission_classes = [AllowAny]
+
     def get(self, request):
         series = Serie.objects.all()
         serializer = SerieSerializer(series, many=True)
@@ -25,6 +28,8 @@ class SeriesView(APIView):
 
 
 class SerieDetailView(APIView):
+    permission_classes = [AllowAny]
+
     def get_object(self, serie_id):
         try:
             return Serie.objects.get(pk=serie_id)
